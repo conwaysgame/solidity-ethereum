@@ -64,6 +64,14 @@ contract ConwaysGameOfLife {
       // e.g. if the cell is on the right (i % width - 1 == 0) or the left (i % width == 0)
       // In those cases I think it should go back to the start or the end of the line
 
+      // Top left
+      // Unsigned int, needs to be compared weirdly
+      if (i >= width + 1) {
+        if (originalWorldBytes[i - (width + 1)] == byte('O')) {
+          numLiveNeighbours++;
+        }
+      }
+
       // Top right
       // Unsigned int, needs to be compared weirdly
       if (i + 1 >= width) {
@@ -95,6 +103,8 @@ contract ConwaysGameOfLife {
 
       if (numLiveNeighbours == 3) {
         resultWorldBytes[i] = 'O';
+      } else if (numLiveNeighbours > 3) {
+        resultWorldBytes[i] = '.';
       } else {
         resultWorldBytes[i] = '.';
       }
