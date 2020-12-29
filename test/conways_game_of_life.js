@@ -37,13 +37,13 @@ contract("ConwaysGameOfLife", (accounts) => {
 
     describe('when ethereum is recieved', () => {
       describe('when exactly the right amount is sent (0.0001 ETH)', () => {
-        describe('a world where a live cell has exactly two living neighbours', () => {
+        describe('a world where a live cell has exactly zero living neighbours', () => {
           let world;
           before(async () => {
             let boardString = '';
             boardString += '.....'
-            boardString += '.OO..'
             boardString += '.O...'
+            boardString += '.....'
             boardString += '.....'
             boardString += '.....';
             await instance.setWorld(boardString, { from: accounts[0] });
@@ -54,27 +54,31 @@ contract("ConwaysGameOfLife", (accounts) => {
             world = worldString.match(/.{1,5}/g)
           });
 
-          it('should kill the living adjacent cells', async () => {
+          it('should kill the living cell', async () => {
             expect(world[1][1]).equal('.');
-            expect(world[1][2]).equal('.');
-            expect(world[2][1]).equal('.');
           });
-      
-          // it("should bring to life the dead adjacent cells", function() {
-          //   expect(gameOfLife.get_world()[2][0]).toEqual(true);
-          //   expect(gameOfLife.get_world()[2][2]).toEqual(true);
-          // });
+        });
 
-          // it("should not revive any other cells", function() {
-          //   expect(gameOfLife.get_world()[0][0]).toBeFalsy();
-          //   expect(gameOfLife.get_world()[1][0]).toBeFalsy();
-          //   expect(gameOfLife.get_world()[3][0]).toBeFalsy();
-      
-          //   expect(gameOfLife.get_world()[0][3]).toBeFalsy();
-          //   expect(gameOfLife.get_world()[1][3]).toBeFalsy();
-          //   expect(gameOfLife.get_world()[2][3]).toBeFalsy();
-          //   expect(gameOfLife.get_world()[3][3]).toBeFalsy();
-          // });
+        describe('a world where a dead cell has exactly three living neighbours', () => {
+          let world;
+          before(async () => {
+            let boardString = '';
+            boardString += '.....'
+            boardString += '...O.'
+            boardString += '.....'
+            boardString += '.O.O.'
+            boardString += '.....';
+            await instance.setWorld(boardString, { from: accounts[0] });
+            let board = await instance.getWorld({ from: accounts[0] });
+            assert.equal(board, boardString);
+            await instance.send(1000000000000000, { from: accounts[0] });
+            const worldString = await instance.getWorld({ from: accounts[0] });
+            world = worldString.match(/.{1,5}/g)
+          });
+
+          it('should bring the dead cell to life', async () => {
+            expect(world[2][2]).equal('O');
+          });
         });
       });
 
