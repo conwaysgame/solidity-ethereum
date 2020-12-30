@@ -12,16 +12,10 @@ contract ConwaysGameOfLife {
   }
 
   receive() external payable {
-    world = nextBoard();
-    // numberOfDeposits = numberOfDeposits + 1;
-    // // More than 0.0001
-    // if (msg.value > 1000000000000000) {
-    //     lastTransaction = "ResetBoard";
-    // } else {
-    //     lastTransaction = "Step";
-    // }
-    // emit Received(msg.sender, msg.value);
-    // payable(dansAddress).transfer(msg.value);
+    // Greater than or equal to 0.00001
+    if (msg.value >= 100000000000000) {
+      world = nextBoard();
+    }
   }
 
   fallback() external payable {  }
