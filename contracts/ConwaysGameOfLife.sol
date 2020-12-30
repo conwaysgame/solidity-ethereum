@@ -72,10 +72,25 @@ contract ConwaysGameOfLife {
         }
       }
 
+      // Top
+      // Unsigned int, needs to be compared weirdly
+      if (i >= width) {
+        if (originalWorldBytes[i - width] == byte('O')) {
+          numLiveNeighbours++;
+        }
+      }
+
       // Top right
       // Unsigned int, needs to be compared weirdly
       if (i + 1 >= width) {
         if (originalWorldBytes[i + 1 - width] == byte('O')) {
+          numLiveNeighbours++;
+        }
+      }
+
+      // The one to the left of it
+      if (i > 0) {
+        if (originalWorldBytes[i - 1] == byte('O')) {
           numLiveNeighbours++;
         }
       }
@@ -94,6 +109,13 @@ contract ConwaysGameOfLife {
         }
       }
 
+      // Bottom
+      if (i + width < worldLength - 1) {
+        if (originalWorldBytes[i + width] == byte('O')) {
+          numLiveNeighbours++;
+        }
+      }
+
       // Bottom right
       if (i + width + 1 < worldLength - 1) {
         if (originalWorldBytes[i + width + 1] == byte('O')) {
@@ -101,12 +123,18 @@ contract ConwaysGameOfLife {
         }
       }
 
-      if (numLiveNeighbours == 3) {
-        resultWorldBytes[i] = 'O';
-      } else if (numLiveNeighbours > 3) {
-        resultWorldBytes[i] = '.';
+      if (originalWorldBytes[i] == byte('O')) {
+        if (numLiveNeighbours == 2 || numLiveNeighbours == 3) {
+          resultWorldBytes[i] = 'O';
+        } else {
+          resultWorldBytes[i] = '.';
+        }
       } else {
-        resultWorldBytes[i] = '.';
+        if (numLiveNeighbours == 3) {
+          resultWorldBytes[i] = 'O';
+        } else {
+          resultWorldBytes[i] = '.';
+        }
       }
     }
     return string(resultWorldBytes);

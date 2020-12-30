@@ -102,6 +102,63 @@ contract("ConwaysGameOfLife", (accounts) => {
             expect(world[2][2]).equal('.');
           });
         });
+
+        describe('a world where a there is a glider', () => {
+          let worldString;
+
+          it('should glide', async () => {
+            let boardString = '';
+            boardString += '.O...'
+            boardString += '..O..'
+            boardString += 'OOO..'
+            boardString += '.....'
+            boardString += '.....';
+            let firstStep = '';
+            firstStep += '.....'
+            firstStep += 'O.O..'
+            firstStep += '.OO..'
+            firstStep += '.O...'
+            firstStep += '.....';
+            let secondStep = '';
+            secondStep += '.....'
+            secondStep += '..O..'
+            secondStep += 'O.O..'
+            secondStep += '.OO..'
+            secondStep += '.....';
+            let thirdStep = '';
+            thirdStep += '.....'
+            thirdStep += '.O...'
+            thirdStep += '..OO.'
+            thirdStep += '.OO..'
+            thirdStep += '.....';
+            let fourthStep = '';
+            fourthStep += '.....'
+            fourthStep += '..O..'
+            fourthStep += '...O.'
+            fourthStep += '.OOO.'
+            fourthStep += '.....';
+
+            await instance.setWorld(boardString, { from: accounts[0] });
+            let board = await instance.getWorld({ from: accounts[0] });
+            assert.equal(board, boardString);
+
+            await instance.send(1000000000000000, { from: accounts[0] });
+            worldString = await instance.getWorld({ from: accounts[0] });
+            assert.equal(worldString, firstStep);
+
+            await instance.send(1000000000000000, { from: accounts[0] });
+            worldString = await instance.getWorld({ from: accounts[0] });
+            assert.equal(worldString, secondStep);
+
+            await instance.send(1000000000000000, { from: accounts[0] });
+            worldString = await instance.getWorld({ from: accounts[0] });
+            assert.equal(worldString, thirdStep);
+
+            await instance.send(1000000000000000, { from: accounts[0] });
+            worldString = await instance.getWorld({ from: accounts[0] });
+            assert.equal(worldString, fourthStep);
+          });
+        });
       });
 
       describe('when too little is sent (0.00005 ETH)', () => {
