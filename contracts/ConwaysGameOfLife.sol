@@ -13,7 +13,8 @@ contract ConwaysGameOfLife {
 
   receive() external payable {
     // Greater than or equal to 0.00001
-    if (msg.value >= 100000000000000) {
+    // below this is just for gas
+    if (msg.value >= 10000000000000) {
       world = nextBoard();
     }
   }
