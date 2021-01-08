@@ -1,0 +1,51 @@
+{
+  "name": "conways-game-solidity-ethereum",
+  "version": "0.0.2",
+  "description": "Conway's Game of Life Written for Ethereum",
+  "main": "false",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "truffle-hdwallet-provider": "^1.0.17",
+    "web3": "^1.2.2"
+  },
+  "devDependencies": {
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.1.1",
+    "truffle-contract": "^4.0.31",
+    "url": "^0.11.0",
+    "util": "^0.12.3",
+    "webpack": "^5.11.1",
+    "webpack-cli": "^4.3.1"
+  },
+  "scripts": {
+    "start": "node server/main.js",
+    "test": "truffle test",
+    "dev": "node_modules/.bin/webpack && node server/main.js",
+    "webpack": "node_modules/.bin/webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conwaysgame/solidity-ethereum.git"
+  },
+  "keywords": [
+    "game",
+    "of",
+    "life",
+    "conways",
+    "game",
+    "ethereum"
+  ],
+  "author": "Dan Hough",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/conwaysgame/solidity-ethereum/issues"
+  },
+  "homepage": "https://github.com/conwaysgame/solidity-ethereum#readme"
+}

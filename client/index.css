@@ -1,0 +1,40 @@
+body {
+  background-color:#F0F0F0;
+  padding: 2em;
+  font-family: ‘Raleway’,’Source Sans Pro’, ‘Arial’;
+ }
+ .container {
+  width: 50%;
+  margin: 0 auto;
+ }
+ label {
+  display:block;
+  margin-bottom:5px;
+ }
+ input {
+  padding:10px;
+  width: 50%;
+  margin-bottom: 1em;
+ }
+ button {
+  margin: 1em 0;
+  padding: 10px 3em;
+ }
+ #buttonMessage{
+     float:left;
+ }
+ #output{
+     background-color: aquamarine;
+     padding: 10px 0px;
+     text-align:center;
+     width:50%;
+     float:left;
+     margin:1em 0;
+ }
+
+ #errorHolder{
+  background-color: coral;
+  padding: 10px;
+  margin:1em 0;
+  clear:both;
+}
