@@ -25,10 +25,6 @@ contract ConwaysGameOfLife {
     return world;
   }
 
-  function getWidth() public view returns(uint) {
-    return width;
-  }
-
   function setWorld(string memory newWorld) public returns(bool success) {
     world = newWorld;
   }

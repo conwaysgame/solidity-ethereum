@@ -6,8 +6,14 @@ App = {
   contracts: {},
   currentAccount: {},
   initWeb3: async function () {
+    console.log('Mode is', process.env.MODE);
     if (process.env.MODE == 'development' || typeof window.web3 === 'undefined') {
+      console.log('Connecting to', process.env.LOCAL_NODE);
       App.web3Provider = new Web3.providers.HttpProvider(process.env.LOCAL_NODE);
+    }
+    if (process.env.MODE == 'production') {
+      console.log('Connecting to', process.env.REMOTE_NODE);
+      App.web3Provider = new Web3.providers.HttpProvider(process.env.REMOTE_NODE);
     }
     else {
       App.web3Provider = web3.currentProvider;
@@ -29,14 +35,33 @@ App = {
   },
   loadMessage: function () {
     App.contracts.ConwaysGameOfLife.deployed().then(async function (instance) {
-      let message;
-      if (App.currentAccount.length) {
-        message = await instance.getWorld.call({ from: App.currentAccount });
-      }
-      else {
-        message = await instance.getWorld.call();
-      }
+      // let message;
+      // if (App.currentAccount.length) {
+      //   message = await instance.getWorld.call({ from: App.currentAccount });
+      // } else {
+      let message = await instance.getWorld.call();
+      // }
       App.showMessage(message);
+    }).catch((err) => {
+      App.showError(err);
+    })
+  },
+  pollForWorld: function () {
+    App.contracts.ConwaysGameOfLife.deployed().then(async function (instance) {
+      setInterval(async () => {
+        console.log('Getting world')
+        let message = await instance.getWorld.call();
+        const gameOfLife = message.match(/.{1,5}/g)
+        console.log('World gotten')
+        App.setWorldDisplay(gameOfLife.join('<br />'));
+        // App.loadMessage()
+      }, 500);
+      // let message;
+      // if (App.currentAccount.length) {
+      //   message = await instance.getWorld.call({ from: App.currentAccount });
+      // } else {
+      // let message = await instance.getWorld.call();
+      // }
     }).catch((err) => {
       App.showError(err);
     })
@@ -45,6 +70,11 @@ App = {
     $('#output').html(msg.toString());
     $('#errorHolder').hide();
     $('#output').show();
+  },
+  setWorldDisplay: function (msg) {
+    $('#worldDisplay').html(msg.toString());
+    $('#errorHolder').hide();
+    $('#worldDisplay').show();
   },
   showError: function (err) {
     $('#errorHolder').html(err.toString());
@@ -74,7 +104,9 @@ App = {
   },
   init: async function () {
     await App.initWeb3();
-    App.loadMessage();
+    // const interval = setInterval(() => App.loadMessage(), 500);
+    // App.loadMessage();
+    App.pollForWorld();
   }
 
 }

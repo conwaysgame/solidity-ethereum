@@ -16,6 +16,8 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         'LOCAL_NODE': JSON.stringify(process.env.LOCAL_NODE),
+        'REMOTE_NODE': JSON.stringify(process.env.REMOTE_NODE),
+        'CONTRACT_ADDRESS': JSON.stringify(process.env.CONTRACT_ADDRESS),
         'MODE': JSON.stringify(process.env.MODE),
       }
     })

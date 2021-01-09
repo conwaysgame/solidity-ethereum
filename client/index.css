@@ -17,19 +17,28 @@ body {
   margin-bottom: 1em;
  }
  button {
-  margin: 1em 0;
-  padding: 10px 3em;
+    margin: 1em 0;
+    padding: 10px 3em;
  }
  #buttonMessage{
-     float:left;
+    float :left;
  }
  #output{
-     background-color: aquamarine;
-     padding: 10px 0px;
-     text-align:center;
-     width:50%;
-     float:left;
-     margin:1em 0;
+    background-color: aquamarine;
+    padding: 10px 0px;
+    text-align:center;
+    width:50%;
+    float:left;
+    margin:1em 0;
+ }
+ #worldDisplay{
+    background-color: aquamarine;
+    padding: 10px 0px;
+    text-align:center;
+    font-family:'Courier New', Courier, monospace;
+    width:50%;
+    float:left;
+    margin:1em 0;
  }
 
  #errorHolder{
