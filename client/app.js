@@ -97,12 +97,6 @@ class App {
     console.log(`Default account is ${web3.eth.defaultAccount}/${this.currentAccount}`);
   }
 
-  showMessage(msg) {
-    $("#output").html(msg.toString());
-    $("#errorHolder").hide();
-    $("#output").show();
-  }
-
   showAddress() {
     if (typeof web3 !== 'undefined') {
       $("#ethAddress").text(process.env.REMOTE_CONTRACT_ADDRESS);
@@ -150,6 +144,11 @@ class App {
     }
   }
 
+  showMessage(msg) {
+    $("#output").html(msg.toString());
+    $("#output").show();
+  }
+
   setWorldDisplay(msg) {
     $("#worldDisplay").html(msg.toString());
     $("#worldDisplay").show();
@@ -175,6 +174,10 @@ $(function () {
   $(window).load(function () {
     $("#errorHolder").hide();
     $("#output").hide();
+
+    $("#errorHolder, #successHolder").click(function () {
+      $(this).hide();
+    });
 
     const app = new App();
     app.init();
