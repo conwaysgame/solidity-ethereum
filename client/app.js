@@ -9,26 +9,31 @@ class App {
   }
 
   async initWeb3() {
-    console.log("Mode is", process.env.MODE);
+    console.log("The mode is", process.env.MODE);
     if (
       process.env.MODE == "development" ||
       typeof window.web3 === "undefined"
     ) {
+      console.log('Dev mode loading');
       this.showMessage(
         `➡ Connecting to the network at ${process.env.LOCAL_NODE}.`
       );
+      $("#ethAddress").text(process.env.LOCAL_CONTRACT_ADDRESS);
       this.web3Provider = new Web3.providers.HttpProvider(
         process.env.LOCAL_NODE
       );
     }
-    if (process.env.MODE == "production") {
+    if (process.env.MODE === "production") {
+      console.log('Prod mode loading');
       this.showMessage(
         `➡ Connecting to the network at ${process.env.REMOTE_NODE}.`
       );
+      $("#ethAddress").text(process.env.REMOTE_CONTRACT_ADDRESS);
       this.web3Provider = new Web3.providers.HttpProvider(
         process.env.REMOTE_NODE
       );
     } else {
+      console.log('Default mode loading');
       this.showMessage(`➡ Connecting to the network using current provider.`);
       this.web3Provider = web3.currentProvider;
     }
