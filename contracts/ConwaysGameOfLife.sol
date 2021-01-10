@@ -27,9 +27,10 @@ contract ConwaysGameOfLife {
     return world;
   }
 
-  function setWorld(string memory newWorld) public {
-    world = newWorld;
-  }
+  // Uncomment when running tests
+  // function setWorld(string memory newWorld) public {
+  //   world = newWorld;
+  // }
 
   function nextBoard() private view returns(string memory) {
     bytes memory originalWorldBytes = bytes(world);

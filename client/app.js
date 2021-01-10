@@ -1,121 +1,117 @@
-var Web3 = require('web3');
-var TruffleContract = require('truffle-contract');
+const Web3 = require("web3");
+const TruffleContract = require("truffle-contract");
 
-App = {
-  web3Provider: null,
-  contracts: {},
-  currentAccount: {},
-  initWeb3: async function () {
-    console.log('Mode is', process.env.MODE);
-    if (process.env.MODE == 'development' || typeof window.web3 === 'undefined') {
-      console.log('Connecting to', process.env.LOCAL_NODE);
-      App.web3Provider = new Web3.providers.HttpProvider(process.env.LOCAL_NODE);
-    }
-    if (process.env.MODE == 'production') {
-      console.log('Connecting to', process.env.REMOTE_NODE);
-      App.web3Provider = new Web3.providers.HttpProvider(process.env.REMOTE_NODE);
-    }
-    else {
-      App.web3Provider = web3.currentProvider;
-    }
-    web3 = new Web3(App.web3Provider);
-    return await App.initContractConwaysGameOfLife();
-  },
-  initContractConwaysGameOfLife: async function () {
-    await $.getJSON('ConwaysGameOfLife.json', function (data) {
-      var ConwaysGameOfLifeArtifact = data;
-      App.contracts.ConwaysGameOfLife = TruffleContract(ConwaysGameOfLifeArtifact);
-      App.contracts.ConwaysGameOfLife.setProvider(App.web3Provider);
-    })
-    return App.bindEvents();
-  },
-  bindEvents: function () {
-    $('#buttonSave').click(App.setName);
-    $('#buttonMessage').click(App.loadMessage);
-  },
-  loadMessage: function () {
-    App.contracts.ConwaysGameOfLife.deployed().then(async function (instance) {
-      // let message;
-      // if (App.currentAccount.length) {
-      //   message = await instance.getWorld.call({ from: App.currentAccount });
-      // } else {
-      let message = await instance.getWorld.call();
-      // }
-      App.showMessage(message);
-    }).catch((err) => {
-      App.showError(err);
-    })
-  },
-  pollForWorld: function () {
-    App.contracts.ConwaysGameOfLife.deployed().then(async function (instance) {
-      setInterval(async () => {
-        console.log('Getting world')
-        let message = await instance.getWorld.call();
-        const gameOfLife = message.match(/.{1,5}/g)
-        console.log('World gotten')
-        App.setWorldDisplay(gameOfLife.join('<br />'));
-        // App.loadMessage()
-      }, 500);
-      // let message;
-      // if (App.currentAccount.length) {
-      //   message = await instance.getWorld.call({ from: App.currentAccount });
-      // } else {
-      // let message = await instance.getWorld.call();
-      // }
-    }).catch((err) => {
-      App.showError(err);
-    })
-  },
-  showMessage: function (msg) {
-    $('#output').html(msg.toString());
-    $('#errorHolder').hide();
-    $('#output').show();
-  },
-  setWorldDisplay: function (msg) {
-    $('#worldDisplay').html(msg.toString());
-    $('#errorHolder').hide();
-    $('#worldDisplay').show();
-  },
-  showError: function (err) {
-    $('#errorHolder').html(err.toString());
-    $('#errorHolder').show();
-    $('#output').hide();
-  },
-  setName: function () {
-    if ($('#name').val()) {
-      web3.eth.getAccounts(function (error, accounts) {
-        if (error) {
-          App.showError(error);
-        }
-        App.currentAccount = accounts[0];
-        App.contracts.ConwaysGameOfLife.deployed().then(function (instance) {
-          return instance.setName.sendTransaction($('#name').val(), { from: App.currentAccount })
-        }).then(function (result) {
-          App.showMessage('Saved Successfully');
-        }).catch(function (error) {
-          App.showError(error);
-        })
-      })
-    }
-    else {
-      App.showError('Error: Name is required.');
-    }
-
-  },
-  init: async function () {
-    await App.initWeb3();
-    // const interval = setInterval(() => App.loadMessage(), 500);
-    // App.loadMessage();
-    App.pollForWorld();
+class App {
+  constructor() {
+    this.web3Provider = null;
+    this.contracts = {};
+    this.currentAccount = {};
   }
 
+  async initWeb3() {
+    console.log("Mode is", process.env.MODE);
+    if (
+      process.env.MODE == "development" ||
+      typeof window.web3 === "undefined"
+    ) {
+      this.showMessage(
+        `Connecting to the network at ${process.env.LOCAL_NODE}...`
+      );
+      this.web3Provider = new Web3.providers.HttpProvider(
+        process.env.LOCAL_NODE
+      );
+    }
+    if (process.env.MODE == "production") {
+      this.showMessage(
+        `Connecting to the network at ${process.env.REMOTE_NODE}...`
+      );
+      this.web3Provider = new Web3.providers.HttpProvider(
+        process.env.REMOTE_NODE
+      );
+    } else {
+      this.showMessage(`Connecting to the network using current provider...`);
+      this.web3Provider = web3.currentProvider;
+    }
+    web3 = new Web3(this.web3Provider);
+    return await this.initContractConwaysGameOfLife();
+  }
+
+  async initContractConwaysGameOfLife() {
+    this.showMessage(`Loading contract data...`);
+    await $.getJSON("ConwaysGameOfLife.json", (data) => {
+      this.showMessage(`Contract data loaded`);
+      const ConwaysGameOfLifeArtifact = data;
+      this.contracts.ConwaysGameOfLife = TruffleContract(
+        ConwaysGameOfLifeArtifact
+      );
+      this.contracts.ConwaysGameOfLife.setProvider(this.web3Provider);
+    });
+    return this.bindEvents();
+  }
+
+  bindEvents() {
+    $("#buttonSave").click(this.setName);
+    $("#buttonMessage").click(this.loadMessage);
+  }
+
+  loadMessage() {
+    this.contracts.ConwaysGameOfLife.deployed()
+      .then(async (instance) => {
+        let message = await instance.getWorld.call();
+        this.showMessage(message);
+      })
+      .catch((err) => {
+        this.showError(err);
+      });
+  }
+
+  pollForWorld() {
+    this.showMessage(`Fetching state of Conway's Game of Life...`);
+    this.contracts.ConwaysGameOfLife.deployed()
+      .then(async (instance) => {
+        this.poll = setInterval(async () => {
+          const message = await instance.getWorld.call();
+          const gameOfLife = message.match(/.{1,5}/g);
+          console.log("Fetched world");
+          this.setWorldDisplay(gameOfLife.join("<br />"));
+        }, 500);
+      })
+      .catch((err) => {
+        this.showError(err);
+      });
+  }
+
+  showMessage(msg) {
+    $("#output").html(msg.toString());
+    $("#errorHolder").hide();
+    $("#output").show();
+  }
+
+  setWorldDisplay(msg) {
+    $("#worldDisplay").html(msg.toString());
+    $("#errorHolder").hide();
+    $("#output").hide();
+    $("#worldDisplay").show();
+  }
+
+  showError(err) {
+    $("#errorHolder").html(err.toString());
+    $("#errorHolder").show();
+    $("#output").hide();
+  }
+
+  async init() {
+    await this.initWeb3();
+    this.pollForWorld();
+  }
 }
 
 $(function () {
   $(window).load(function () {
-    $('#errorHolder').hide();
-    $('#output').hide();
+    $("#errorHolder").hide();
+    $("#output").hide();
 
-    App.init();
+    const app = new App();
+    app.init();
   });
 });
