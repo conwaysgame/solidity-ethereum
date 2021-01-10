@@ -18,24 +18,26 @@ class App {
       this.showMessage(
         `➡ Connecting to the network at ${process.env.LOCAL_NODE}.`
       );
-      $("#ethAddress").text(process.env.LOCAL_CONTRACT_ADDRESS);
+      this.showAddress(process.env.LOCAL_CONTRACT_ADDRESS);
       this.web3Provider = new Web3.providers.HttpProvider(
         process.env.LOCAL_NODE
       );
     }
-    if (process.env.MODE === "production") {
+
+    if (process.env.MODE === "production" && typeof window.web3 === "undefined") {
       console.log('Prod mode loading');
       this.showMessage(
         `➡ Connecting to the network at ${process.env.REMOTE_NODE}.`
       );
-      $("#ethAddress").text(process.env.REMOTE_CONTRACT_ADDRESS);
+      this.showAddress(process.env.REMOTE_CONTRACT_ADDRESS);
       this.web3Provider = new Web3.providers.HttpProvider(
         process.env.REMOTE_NODE
       );
     } else {
-      console.log('Default mode loading');
+      console.log('Using the current provider.');
       this.showMessage(`➡ Connecting to the network using current provider.`);
       this.web3Provider = web3.currentProvider;
+      this.showAddress(process.env.REMOTE_CONTRACT_ADDRESS);
     }
     web3 = new Web3(this.web3Provider);
     return await this.initContractConwaysGameOfLife();
@@ -87,10 +89,39 @@ class App {
       });
   }
 
+  async resolveAccount() {
+    let accounts = await web3.eth.getAccounts();
+    this.currentAccount = accounts[0];
+    web3.eth.defaultAccount = accounts[0];
+    console.log(`Default account is ${web3.eth.defaultAccount}/${this.currentAccount}`);
+  }
+
   showMessage(msg) {
     $("#output").html(msg.toString());
     $("#errorHolder").hide();
     $("#output").show();
+  }
+
+  showAddress() {
+    if (typeof web3 !== 'undefined') {
+      $("#ethAddress").text(process.env.REMOTE_CONTRACT_ADDRESS);
+      $("#ethAddress").attr('title', `Click to send 0.0001ETH to ${process.env.REMOTE_CONTRACT_ADDRESS}`);
+      $("#ethAddress").attr('href', `#`);
+      $("#ethAddress").click(e => {
+        e.preventDefault();
+        web3.eth.sendTransaction({
+          to: process.env.REMOTE_CONTRACT_ADDRESS,
+          from: this.currentAccount,
+          value: 10000000000000
+        }, (err, transactionId) => {
+          if (err) {
+            console.log('Payment failed', err)
+          } else {
+            console.log('Payment successful', transactionId)
+          }
+        })
+      });
+    }
   }
 
   setWorldDisplay(msg) {
@@ -108,6 +139,7 @@ class App {
   async init() {
     await this.initWeb3();
     this.pollForWorld();
+    this.resolveAccount();
   }
 }
 
