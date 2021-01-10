@@ -20,13 +20,6 @@ contract("ConwaysGameOfLife", (accounts) => {
     });
   });
 
-  describe('#getWorld', () => {
-    it("should return the default world width", async function () {
-      let width = await instance.getWidth({ from: accounts[0] });
-      return assert.equal(width, 5);
-    });
-  });
-
   describe('#setWorld', () => {
     it('should set the world to the specified configuration', async () => {
       const boardString = '.OOO.....................';
@@ -100,6 +93,28 @@ contract("ConwaysGameOfLife", (accounts) => {
 
           it('should kill the living cell as if by overpopulation', async () => {
             expect(world[2][2]).equal('.');
+          });
+        });
+
+        describe('a world where a living cell has exactly four living neighbours on another side of', () => {
+          let world;
+          before(async () => {
+            let boardString = '';
+            boardString += '.....'
+            boardString += 'O..O.'
+            boardString += '....O'
+            boardString += 'O..O.'
+            boardString += '.....';
+            await instance.setWorld(boardString, { from: accounts[0] });
+            let board = await instance.getWorld({ from: accounts[0] });
+            assert.equal(board, boardString);
+            await instance.send(1000000000000000, { from: accounts[0] });
+            const worldString = await instance.getWorld({ from: accounts[0] });
+            world = worldString.match(/.{1,5}/g)
+          });
+
+          it('should kill the living cell as if by overpopulation', async () => {
+            expect(world[2][4]).equal('.');
           });
         });
 

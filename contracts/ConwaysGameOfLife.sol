@@ -4,11 +4,13 @@ pragma solidity >=0.4.22 <0.9.0;
 
 contract ConwaysGameOfLife {
   string world;
-  uint width;
+  uint8 width;
+  uint8 worldLength;
 
   constructor() {
     world = '.O.....O..OOO............';
     width = 5;
+    worldLength = 25;
   }
 
   receive() external payable {
@@ -25,93 +27,90 @@ contract ConwaysGameOfLife {
     return world;
   }
 
-  function setWorld(string memory newWorld) public returns(bool success) {
+  function setWorld(string memory newWorld) public {
     world = newWorld;
-  }
-
-  function setWidth(uint newWidth) public returns(bool success) {
-    width = newWidth;
   }
 
   function nextBoard() private view returns(string memory) {
     bytes memory originalWorldBytes = bytes(world);
     bytes memory resultWorldBytes = new bytes(originalWorldBytes.length);
+    uint8 topEdgeDelta = 0;
+    uint8 rightEdgeDelta = 0;
+    uint8 bottomEdgeDelta = 0;
+    uint8 leftEdgeDelta = 0;
 
     // Maximum for this is 8, so 8 bits is more than enough
     uint8 numLiveNeighbours = 0;
-    uint worldLength = originalWorldBytes.length;
 
     for(uint i=0;i<worldLength;i++) {
       numLiveNeighbours = 0;
-      // Top left
-      // if (i >= (width + 1)) {
-      //   i - (width + 1)
-      // }
-      // if (i > 0) {
-      //   if (originalWorldBytes)
-      // }
 
-      // This isn't quite right yet. It will not always check the correct one,
-      // e.g. if the cell is on the right (i % width - 1 == 0) or the left (i % width == 0)
-      // In those cases I think it should go back to the start or the end of the line
+      // This is a top-edge cell
+      if (i < width) {
+        topEdgeDelta = worldLength;
+      } else {
+        topEdgeDelta = 0;
+      }
+
+      // This is right-edge cell
+      if ((i + 1) % width == 0) {
+        rightEdgeDelta = width;
+      } else {
+        rightEdgeDelta = 0;
+      }
+
+      // This is a bottom-edge cell
+      if (i + width > worldLength - 1) {
+        bottomEdgeDelta = worldLength;
+      } else {
+        bottomEdgeDelta = 0;
+      }
+
+      // This is a left-edge cell
+      if ((i + width) % width == 0) {
+        leftEdgeDelta = width;
+      } else {
+        leftEdgeDelta = 0;
+      }
 
       // Top left
-      // Unsigned int, needs to be compared weirdly
-      if (i >= width + 1) {
-        if (originalWorldBytes[i - (width + 1)] == byte('O')) {
-          numLiveNeighbours++;
-        }
+      if (originalWorldBytes[i - (width + 1) + topEdgeDelta + leftEdgeDelta] == byte('O')) {
+        numLiveNeighbours++;
       }
 
       // Top
-      // Unsigned int, needs to be compared weirdly
-      if (i >= width) {
-        if (originalWorldBytes[i - width] == byte('O')) {
-          numLiveNeighbours++;
-        }
+      if (originalWorldBytes[i - width + topEdgeDelta] == byte('O')) {
+        numLiveNeighbours++;
       }
 
       // Top right
-      // Unsigned int, needs to be compared weirdly
-      if (i + 1 >= width) {
-        if (originalWorldBytes[i + 1 - width] == byte('O')) {
-          numLiveNeighbours++;
-        }
+      if (originalWorldBytes[i + 1 - width + topEdgeDelta - rightEdgeDelta] == byte('O')) {
+        numLiveNeighbours++;
       }
 
       // The one to the left of it
-      if (i > 0) {
-        if (originalWorldBytes[i - 1] == byte('O')) {
-          numLiveNeighbours++;
-        }
+      if (originalWorldBytes[i - 1 + leftEdgeDelta] == byte('O')) {
+        numLiveNeighbours++;
       }
 
       // The one to the right of it
-      if (i + 1 < worldLength) {
-        if (originalWorldBytes[i + 1] == byte('O')) {
-          numLiveNeighbours++;
-        }
+      if (originalWorldBytes[i + 1 - rightEdgeDelta] == byte('O')) {
+        numLiveNeighbours++;
       }
 
       // Bottom left
-      if (i + width - 1 < worldLength - 1) {
-        if (originalWorldBytes[i + width - 1] == byte('O')) {
-          numLiveNeighbours++;
-        }
+      if (originalWorldBytes[i + width - 1 - bottomEdgeDelta + leftEdgeDelta] == byte('O')) {
+        numLiveNeighbours++;
       }
 
       // Bottom
-      if (i + width < worldLength - 1) {
-        if (originalWorldBytes[i + width] == byte('O')) {
-          numLiveNeighbours++;
-        }
+      if (originalWorldBytes[i + width - bottomEdgeDelta] == byte('O')) {
+        numLiveNeighbours++;
       }
 
       // Bottom right
-      if (i + width + 1 < worldLength - 1) {
-        if (originalWorldBytes[i + width + 1] == byte('O')) {
-          numLiveNeighbours++;
-        }
+      if (originalWorldBytes[i + width + 1 - bottomEdgeDelta - rightEdgeDelta] == byte('O')) {
+        numLiveNeighbours++;
       }
 
       if (originalWorldBytes[i] == byte('O')) {
