@@ -30,17 +30,25 @@
     <div id="worldDisplay">-----<br>-----<br>-----<br>-----<br>-----</div>
     <div class="howToUse">
       <h2>How To Use</h2>
+      <p>This web page shows he output of an implementation of Conway's Game of Life written for the Ethereum network as a Smart Contract. In order to evolve the world to its next state (i.e., go to the next turn) one must simply send 0.0001 ETH or more to the smart contract's address on the network.</p>
       <ol>
         <li>Make sure you have a web3-enabled browser (like <a href="https://brave.com/" target="_blank">Brave</a>) or browser extension (like <a href="https://metamask.io/" target="_blank">MetaMask</a>).</li>
-        <li>Create an ETH account with your network set to Rinkeby Test Network.</li>
+        <li>Create an ETH account with your network set to <em class="ethNetwork">Rinkeby Test Network</em></li>
         <li>Visit <a href="https://faucet.rinkeby.io/" target="_blank">https://faucet.rinkeby.io/</a> and follow instructions to get funds. For now, it needs link of social media share of ethereum account ID.</li>
-        <li>Send a transaction of at least <code>0.0001 ETH</code>, or <code>10000000000000 Wei</code> to the following address using the <em id="ethNetwork">Rinkeby Test Network</em>:<br><a id="ethAddress"></p></li>
+        <li>Send a transaction of at least <code>0.0001 ETH</code>, or <code>10000000000000 Wei</code> to the following address using the <em class="ethNetwork">Rinkeby Test Network</em>:<br><a id="ethAddress"></p></li>
       </ol>
     </div>
     <div class="howToUse">
       <h2>Explanation</h2>
-      <p>In order to use this Game of Life you need to send a transaction of at least <code>0.0001 ETH</code>, or <code>10000000000000 Wei</code> to the following address using the <em id="ethNetwork">Rinkeby Test Network</em>:</p>
-      <a id="ethAddress"></p>
+      <p><a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank"><em>Conway's Game of Life</em></a> is a cellular automata, and can also be described as a turn-based "zero-player game."</p>
+      <p>It is made up of a two-dimensional grid of cells. You can think of each cell as having the potential to be populated - it can be alive or dead, and during each turn in the game its state is reassessed based on the states of its 8 neighbours. These are the "rules" by which a cell's state is determined each turn.</p>
+      <ol>
+        <li>Any live cell with fewer than two live neighbours dies, as if by underpopulation.</li>
+        <li>Any live cell with two or three live neighbours lives on to the next generation.</li>
+        <li>Any live cell with more than three live neighbours dies, as if by overpopulation.</li>
+        <li>Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.</li>
+      </ol>
+      <p>Most </p>
     </div>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
