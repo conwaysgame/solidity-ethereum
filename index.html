@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="author" content="Daniel Hough" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="description" content="This is a version of Conway's Game of Life written for the Ethereum Network, as a Smart Contract and Dapp." />
+  <meta property="og:description" content="This is a version of Conway's Game of Life written for the Ethereum Network, as a Smart Contract and Dapp." />
+  <title>Conway's Distributed Game of Life</title>
+  <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Conway's Distributed Game of Life</h1>
+    <div id="output" style="display:block;">➡ Connecting to the network.</div>
+    <div id="errorHolder" style="display:none;"></div>
+    <div id="worldDisplay">-----<br>-----<br>-----<br>-----<br>-----</div>
+    <div class="howToUse">
+      <h2>How To Use</h2>
+      <p>In order to use this Game of Life you need to send a transaction of at least <code>0.0001 ETH</code>, or <code>10000000000000 Wei</code> to the following address using the <em id="ethNetwork">Rinkeby Test Network</em>:</p>
+      <a id="ethAddress"></p>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="dist/bundle.js"></script>
+</body>
+
+</html>

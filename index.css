@@ -1,0 +1,80 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f0f0f0;
+  font-size:16pt;
+  margin: 2rem 1rem;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  margin: 0 0 2rem 0;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 10px;
+  width: 50%;
+  margin-bottom: 1em;
+}
+
+button {
+  margin: 1em 0;
+  padding: 10px 3em;
+}
+
+#buttonMessage {
+  float: left;
+}
+
+#output {
+  background-color: lightblue;
+  color: black;
+  padding: 1rem 0px;
+  width: 100%;
+  text-align: center;
+  margin: 0 0 1rem 0;
+  line-height: 1.2em;
+}
+
+#errorHolder {
+  background-color: coral;
+  color: black;
+  padding: 1rem 0px;
+  width: 100%;
+  text-align: center;
+  margin: 0 0 1rem 0;
+  line-height: 1.2em;
+}
+
+#worldDisplay {
+  background-color: darkblue;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 1rem 0px;
+  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+  width: 100%;
+  margin: 0 0 1rem 0;
+  letter-spacing: 0.7em;
+  line-height: 1.5em;
+}
+
+a#ethAddress:link, a#ethAddress:visited {
+  color:navy;
+}
