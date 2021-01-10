@@ -15,7 +15,7 @@ class App {
       typeof window.web3 === "undefined"
     ) {
       this.showMessage(
-        `Connecting to the network at ${process.env.LOCAL_NODE}...`
+        `➡ Connecting to the network at ${process.env.LOCAL_NODE}.`
       );
       this.web3Provider = new Web3.providers.HttpProvider(
         process.env.LOCAL_NODE
@@ -23,13 +23,13 @@ class App {
     }
     if (process.env.MODE == "production") {
       this.showMessage(
-        `Connecting to the network at ${process.env.REMOTE_NODE}...`
+        `➡ Connecting to the network at ${process.env.REMOTE_NODE}.`
       );
       this.web3Provider = new Web3.providers.HttpProvider(
         process.env.REMOTE_NODE
       );
     } else {
-      this.showMessage(`Connecting to the network using current provider...`);
+      this.showMessage(`➡ Connecting to the network using current provider.`);
       this.web3Provider = web3.currentProvider;
     }
     web3 = new Web3(this.web3Provider);
@@ -37,9 +37,9 @@ class App {
   }
 
   async initContractConwaysGameOfLife() {
-    this.showMessage(`Loading contract data...`);
+    this.showMessage(`➡ Loading contract data.`);
     await $.getJSON("ConwaysGameOfLife.json", (data) => {
-      this.showMessage(`Contract data loaded`);
+      this.showMessage(`➡ Contract data loaded.`);
       const ConwaysGameOfLifeArtifact = data;
       this.contracts.ConwaysGameOfLife = TruffleContract(
         ConwaysGameOfLifeArtifact
@@ -66,13 +66,14 @@ class App {
   }
 
   pollForWorld() {
-    this.showMessage(`Fetching state of Conway's Game of Life...`);
+    this.showMessage(`➡ Fetching state of Conway's Game of Life.`);
     this.contracts.ConwaysGameOfLife.deployed()
       .then(async (instance) => {
         this.poll = setInterval(async () => {
           const message = await instance.getWorld.call();
           const gameOfLife = message.match(/.{1,5}/g);
           console.log("Fetched world");
+          this.showMessage(`✓ Continually polling for latest world state.`);
           this.setWorldDisplay(gameOfLife.join("<br />"));
         }, 500);
       })

@@ -44,19 +44,21 @@ button {
 #output {
   background-color: lightblue;
   color: black;
-  padding: 10px 0px;
+  padding: 1rem 0px;
   width: 100%;
   text-align: center;
   margin: 0 0 1rem 0;
+  line-height: 1.2em;
 }
 
 #errorHolder {
   background-color: coral;
   color: black;
-  padding: 10px 0px;
+  padding: 1rem 0px;
   width: 100%;
   text-align: center;
   margin: 0 0 1rem 0;
+  line-height: 1.2em;
 }
 
 #worldDisplay {
@@ -69,4 +71,6 @@ button {
   font-family: "Courier New", Courier, monospace;
   width: 100%;
   margin: 0 0 1rem 0;
+  letter-spacing: 0.7em;
+  line-height: 1.5em;
 }
