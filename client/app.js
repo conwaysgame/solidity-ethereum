@@ -45,7 +45,7 @@ class App {
 
   async initContractConwaysGameOfLife() {
     this.showMessage(`➡ Loading contract data.`);
-    await $.getJSON("ConwaysGameOfLife.json", (data) => {
+    return await $.getJSON("ConwaysGameOfLife.json", (data) => {
       this.showMessage(`➡ Contract data loaded.`);
       const ConwaysGameOfLifeArtifact = data;
       this.contracts.ConwaysGameOfLife = TruffleContract(
@@ -53,12 +53,6 @@ class App {
       );
       this.contracts.ConwaysGameOfLife.setProvider(this.web3Provider);
     });
-    return this.bindEvents();
-  }
-
-  bindEvents() {
-    $("#buttonSave").click(this.setName);
-    $("#buttonMessage").click(this.loadMessage);
   }
 
   loadMessage() {
@@ -90,6 +84,7 @@ class App {
   }
 
   async resolveAccount() {
+    // Should use this.web3 maybe??
     let accounts = await web3.eth.getAccounts();
     this.currentAccount = accounts[0];
     web3.eth.defaultAccount = accounts[0];
