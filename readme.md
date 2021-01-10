@@ -49,10 +49,10 @@ Go to http://localhost:3000 and you should see the board.
 let instance = await ConwaysGameOfLife.deployed()
 let accounts = await web3.eth.getAccounts()
 // Set this to whatever the contract address from `migrate` was
-let contractAddress = '0xF0F5A8B2febCf7Bca2Bc5717EAc16F47F5b8E133'
+let contractAddress = '0x4942c3da1472Fb771f609FaFD0Fa700A5Fb02891'
 
 // Let's send the contract some ETH
-web3.eth.sendTransaction({to: contractAddress, from: accounts[0], value: 1000000000000000, gas: 3000000})
+await web3.eth.sendTransaction({to: contractAddress, from: accounts[0], value: 1000000000000000, gas: 3000000})
 
 // This should show you what the world currently looks like
 instance.getWorld()
