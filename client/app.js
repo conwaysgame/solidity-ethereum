@@ -90,7 +90,6 @@ class App {
   setWorldDisplay(msg) {
     $("#worldDisplay").html(msg.toString());
     $("#errorHolder").hide();
-    $("#output").hide();
     $("#worldDisplay").show();
   }
 
