@@ -61,6 +61,16 @@ button {
   line-height: 1.2em;
 }
 
+#successHolder {
+  background-color: lightgreen;
+  color: black;
+  padding: 1rem 0px;
+  width: 100%;
+  text-align: center;
+  margin: 0 0 1rem 0;
+  line-height: 1.2em;
+}
+
 #worldDisplay {
   background-color: darkblue;
   color: white;
