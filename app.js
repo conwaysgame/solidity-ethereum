@@ -73,7 +73,6 @@ class App {
         this.poll = setInterval(async () => {
           const message = await instance.getWorld.call();
           const gameOfLife = message.match(/.{1,5}/g);
-          console.log("Fetched world");
           this.showMessage(`✓ Continually polling for latest world state.`);
           this.setWorldDisplay(gameOfLife.join("<br />"));
         }, 500);
@@ -81,6 +80,13 @@ class App {
       .catch((err) => {
         this.showError(err);
       });
+  }
+
+  async enableEthereum() {
+    if(window.ethereum) {
+      await ethereum.enable();
+      return await this.resolveAccount();
+    }
   }
 
   async resolveAccount() {
@@ -91,18 +97,15 @@ class App {
     console.log(`Default account is ${web3.eth.defaultAccount}/${this.currentAccount}`);
   }
 
-  showMessage(msg) {
-    $("#output").html(msg.toString());
-    $("#errorHolder").hide();
-    $("#output").show();
-  }
-
   showAddress() {
     if (typeof web3 !== 'undefined') {
       $("#ethAddress").text(process.env.REMOTE_CONTRACT_ADDRESS);
       $("#ethAddress").attr('title', `Click to send 0.0001ETH to ${process.env.REMOTE_CONTRACT_ADDRESS}`);
       $("#ethAddress").attr('href', `#`);
-      $("#ethAddress").click(e => {
+      $("#ethAddress").unbind('click');
+      $("#ethAddress").click(async e => {
+        await this.enableEthereum();
+        console.log(`Going to start sending from ${this.currentAccount}`)
         e.preventDefault();
         web3.eth.sendTransaction({
           to: process.env.REMOTE_CONTRACT_ADDRESS,
@@ -110,31 +113,60 @@ class App {
           value: 10000000000000
         }, (err, transactionId) => {
           if (err) {
-            console.log('Payment failed', err)
+            console.log('Payment failed', err);
           } else {
-            console.log('Payment successful', transactionId)
+            console.log('Payment has gone through, will start polling for info');
+            const txInfoInterval = setInterval(() => {
+              web3.eth.getTransactionReceipt(transactionId, (e, data) => {
+                if (!data) {
+                  console.log('No transaction found with ID ' + transactionId);
+                } else if (e) {
+                  clearInterval(txInfoInterval);
+                  console.log(e);
+                } else {
+                  clearInterval(txInfoInterval);
+                  console.log(data);
+                  if(!data.status) {
+                    if (data.gasUsed < 400000) {
+                      this.showError(`The transaction failed, possibly because you only provided ${data.gasUsed}. I recommend you provide at least 400000 gas for this to work.`)
+                    } else {
+                      this.showError('The transaction failed, not sure why. Check the console for more details.')
+                    }
+                  } else {
+                    this.showSuccess('The transaction succeeded, you should see the world change very soon.')
+                  }
+                }
+              });
+            }, 500);
           }
         })
       });
     }
   }
 
+  showMessage(msg) {
+    $("#output").html(msg.toString());
+    $("#output").show();
+  }
+
   setWorldDisplay(msg) {
     $("#worldDisplay").html(msg.toString());
-    $("#errorHolder").hide();
     $("#worldDisplay").show();
   }
 
   showError(err) {
     $("#errorHolder").html(err.toString());
     $("#errorHolder").show();
-    $("#output").hide();
+  }
+
+  showSuccess(message) {
+    $("#successHolder").html(message.toString());
+    $("#successHolder").show();
   }
 
   async init() {
     await this.initWeb3();
     this.pollForWorld();
-    this.resolveAccount();
   }
 }
 
@@ -142,6 +174,10 @@ $(function () {
   $(window).load(function () {
     $("#errorHolder").hide();
     $("#output").hide();
+
+    $("#errorHolder, #successHolder").click(function () {
+      $(this).hide();
+    });
 
     const app = new App();
     app.init();
