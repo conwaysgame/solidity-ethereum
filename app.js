@@ -120,8 +120,8 @@ class App {
   }
 
   showAddress() {
-    if (typeof web3 !== 'undefined') {
-      $(".ethAddress").text(process.env.REMOTE_CONTRACT_ADDRESS);
+    $(".ethAddress").text(process.env.REMOTE_CONTRACT_ADDRESS);
+    if (typeof this.web3 !== 'undefined') {
       $(".ethAddressLink").attr('title', `Click to send 0.0001ETH to ${process.env.REMOTE_CONTRACT_ADDRESS}`);
       $(".ethAddressLink").attr('href', `#`);
       $(".ethAddressLink").unbind('click');
