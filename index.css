@@ -85,6 +85,6 @@ button {
   line-height: 1.5em;
 }
 
-a.ethAddress:link, a.ethAddress:visited, a.ethAddressLink:link, a.ethAddressLink:visited {
+a.ethAddressLink:link, a.ethAddressLink:visited {
   color:navy;
 }
