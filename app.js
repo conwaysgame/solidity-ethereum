@@ -1,15 +1,18 @@
-const Web3 = require("web3");
-const TruffleContract = require("truffle-contract");
+import Web3 from "web3";
+import TruffleContract from "truffle-contract";
+import detectEthereumProvider from '@metamask/detect-provider'
 
 class App {
   constructor() {
     this.web3Provider = null;
     this.contracts = {};
     this.currentAccount = {};
+    this.networkType = 'rinkeby';
   }
 
   async initWeb3() {
     console.log("The mode is", process.env.MODE);
+
     if (
       process.env.MODE == "development" ||
       typeof window.web3 === "undefined"
@@ -40,6 +43,15 @@ class App {
       this.showAddress(process.env.REMOTE_CONTRACT_ADDRESS);
     }
     web3 = new Web3(this.web3Provider);
+
+    console.log(await detectEthereumProvider());
+    this.networkType = await web3.eth.net.getNetworkType();
+
+    if (this.networkType !== 'rinkeby') {
+      this.showMessage(`Please switch your wallet to use the Rinkeby Testnet, you are currently on ${this.networkType}. Then, refresh!`);
+      return false;
+    }
+
     return await this.initContractConwaysGameOfLife();
   }
 
@@ -165,8 +177,10 @@ class App {
   }
 
   async init() {
-    await this.initWeb3();
-    this.pollForWorld();
+    const initiated = await this.initWeb3();
+    if (initiated) {
+      this.pollForWorld();
+    }
   }
 }
 
