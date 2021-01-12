@@ -5,6 +5,7 @@ import detectEthereumProvider from '@metamask/detect-provider'
 class App {
   constructor() {
     this.web3Provider = null;
+    this.web3 = null;
     this.contracts = {};
     this.currentAccount = {};
     this.networkType = 'rinkeby';
@@ -36,20 +37,29 @@ class App {
       this.web3Provider = new Web3.providers.HttpProvider(
         process.env.REMOTE_NODE
       );
-    } else {
+    } else if (process.env.MODE === 'production') {
       console.log('Using the current provider.');
       this.showMessage(`➡ Connecting to the network using current provider.`);
       this.web3Provider = web3.currentProvider;
       this.showAddress(process.env.REMOTE_CONTRACT_ADDRESS);
     }
-    web3 = new Web3(this.web3Provider);
+
+    this.web3 = new Web3(this.web3Provider);
 
     console.log(await detectEthereumProvider());
-    this.networkType = await web3.eth.net.getNetworkType();
 
-    if (this.networkType !== 'rinkeby') {
-      this.showMessage(`Please switch your wallet to use the Rinkeby Testnet, you are currently on ${this.networkType}. Then, refresh!`);
-      return false;
+    try {
+      this.networkType = await this.web3.eth.net.getNetworkType();
+
+      console.log('Network Type is ', this.networkType);
+
+      if (this.networkType !== 'rinkeby' && this.networkType !== 'private' ) {
+        this.showMessage(`Please switch your wallet to use the Rinkeby Testnet, you are currently on ${this.networkType}. Then, refresh!`);
+        return false;
+      }
+    } catch (e) {
+      console.error('Failed to detect network type. Probably no metamask installed.')
+      console.error(e);
     }
 
     return await this.initContractConwaysGameOfLife();
@@ -103,15 +113,15 @@ class App {
 
   async resolveAccount() {
     // Should use this.web3 maybe??
-    let accounts = await web3.eth.getAccounts();
+    let accounts = await this.web3.eth.getAccounts();
     this.currentAccount = accounts[0];
-    web3.eth.defaultAccount = accounts[0];
+    this.web3.eth.defaultAccount = accounts[0];
     console.log(`Default account is ${web3.eth.defaultAccount}/${this.currentAccount}`);
   }
 
   showAddress() {
-    if (typeof web3 !== 'undefined') {
-      $(".ethAddress").text(process.env.REMOTE_CONTRACT_ADDRESS);
+    $(".ethAddress").text(process.env.REMOTE_CONTRACT_ADDRESS);
+    if (typeof window.ethereum !== 'undefined') {
       $(".ethAddressLink").attr('title', `Click to send 0.0001ETH to ${process.env.REMOTE_CONTRACT_ADDRESS}`);
       $(".ethAddressLink").attr('href', `#`);
       $(".ethAddressLink").unbind('click');
@@ -119,7 +129,7 @@ class App {
         await this.enableEthereum();
         console.log(`Going to start sending from ${this.currentAccount}`)
         e.preventDefault();
-        web3.eth.sendTransaction({
+        this.web3.eth.sendTransaction({
           to: process.env.REMOTE_CONTRACT_ADDRESS,
           from: this.currentAccount,
           value: 10000000000000
@@ -129,7 +139,7 @@ class App {
           } else {
             console.log('Payment has gone through, will start polling for info');
             const txInfoInterval = setInterval(() => {
-              web3.eth.getTransactionReceipt(transactionId, (e, data) => {
+              this.web3.eth.getTransactionReceipt(transactionId, (e, data) => {
                 if (!data) {
                   console.log('No transaction found with ID ' + transactionId);
                 } else if (e) {
