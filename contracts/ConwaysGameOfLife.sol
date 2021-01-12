@@ -18,6 +18,8 @@ contract ConwaysGameOfLife {
     // below this is just for gas
     if (msg.value >= 10000000000000) {
       world = nextBoard();
+      // For now this is a test address. I will have it go to EFF for real.
+      payable(address(0x860c8513dE758223C59D7dFc544298b4Bf059288)).transfer(msg.value);
     }
   }
 
