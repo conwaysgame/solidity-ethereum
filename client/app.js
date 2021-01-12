@@ -100,10 +100,10 @@ class App {
   showAddress() {
     if (typeof web3 !== 'undefined') {
       $(".ethAddress").text(process.env.REMOTE_CONTRACT_ADDRESS);
-      $(".ethAddress, .ethAddressLink").attr('title', `Click to send 0.0001ETH to ${process.env.REMOTE_CONTRACT_ADDRESS}`);
-      $(".ethAddress, .ethAddressLink").attr('href', `#`);
-      $(".ethAddress, .ethAddressLink").unbind('click');
-      $(".ethAddress, .ethAddressLink").click(async e => {
+      $(".ethAddressLink").attr('title', `Click to send 0.0001ETH to ${process.env.REMOTE_CONTRACT_ADDRESS}`);
+      $(".ethAddressLink").attr('href', `#`);
+      $(".ethAddressLink").unbind('click');
+      $(".ethAddressLink").click(async e => {
         await this.enableEthereum();
         console.log(`Going to start sending from ${this.currentAccount}`)
         e.preventDefault();
