@@ -28,14 +28,15 @@
     <div id="successHolder" style="display:none;" title="Click me to close me."></div>
     <div id="errorHolder" style="display:none;" title="Click me to close me."></div>
     <div id="worldDisplay">-----<br>-----<br>-----<br>-----<br>-----</div>
+    <div id="sendEther">➡️ <a class="ethAddressLink">Send 0.0001 ETH to <span class="ethAddress">Loading address</span></a></div>
     <div class="howToUse">
       <h2>How To Use</h2>
-      <p>This web page shows he output of an implementation of Conway's Game of Life written for the Ethereum network as a Smart Contract. In order to evolve the world to its next state (i.e., go to the next turn) one must simply send 0.0001 ETH or more to the smart contract's address on the network.</p>
+      <p>This web page shows he output of an implementation of Conway's Game of Life written for the Ethereum network as a Smart Contract. In order to evolve the world to its next state (i.e., go to the next turn) one must simply send at least 0.00001 ETH or more to the smart contract's address on the network. Here are some more details:</p>
       <ol>
-        <li>Make sure you have a web3-enabled browser (like <a href="https://brave.com/" target="_blank">Brave</a>) or browser extension (like <a href="https://metamask.io/" target="_blank">MetaMask</a>).</li>
+        <li>Have an Ethereum wallet, ideally as a browser extension like <a href="https://metamask.io/" target="_blank">MetaMask</a> (<a href="https://brave.com/" target="_blank">Brave</a> web brower includes a built-in MetaMask).</li>
         <li>Create an ETH account with your network set to <em class="ethNetwork">Rinkeby Test Network</em></li>
         <li>Visit <a href="https://faucet.rinkeby.io/" target="_blank">https://faucet.rinkeby.io/</a> and follow instructions to get funds. For now, it needs link of social media share of ethereum account ID.</li>
-        <li>Send a transaction of at least <code>0.0001 ETH</code>, or <code>10000000000000 Wei</code> to the following address using the <em class="ethNetwork">Rinkeby Test Network</em>:<br><a id="ethAddress"></p></li>
+        <li>Send a transaction of at least <code>0.00001 ETH</code>, or <code>10000000000000 Wei</code> to the following address using the <em class="ethNetwork">Rinkeby Test Network</em>. You can click the address to start a transaction.<br><a class="ethAddress">Loading...</a></li>
       </ol>
     </div>
     <div class="howToUse">
@@ -48,7 +49,12 @@
         <li>Any live cell with more than three live neighbours dies, as if by overpopulation.</li>
         <li>Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.</li>
       </ol>
-      <p>Most </p>
+      <p>Most implementations of the Game of Life simply have</p>
+      <h3>Why did you do this?</h3>
+      <p>Since 2014 I have been steadily writing <a href="https://github.com/conwaysgame" target="_blank">implementations of the Game of Life</a> in various languages. It's a fun exercise in TDD and a good way to be exposed to new technologies. The ever-increasing interest in cryptocurrencies and slow rise in availability of distributed apps (Dapps) and smart contracts prompted me to experiment with a version of the game which could run as a Dapp. Turns out, it can.</p>
+      <h3>How did you do this?</h3>
+      <p>I started by completing <a href="https://techbrij.com/hello-world-smart-contract-solidity-ethereum-dapp-part-1" target="_blank">a Hello World tutorial by Brij Mohan</a>, and then started from scratch with a new project. You can read more in <a href="https://danhough.com/blog/conways-gol-ethereum" target="_blank" rel="noopener noreferrer">a blog post I wrote</a> (PENDING).</p>
+      <p>If you'd like to see the code, raise an issue, or open a pull request, you can do so on the <a href="https://github.com/conwaysgame/solidity-ethereum" target="_blank">GitHub repository</a>.</p>
     </div>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
