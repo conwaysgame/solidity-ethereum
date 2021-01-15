@@ -8,10 +8,19 @@ module.exports = {
      port: 7545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
     },    
+    ropsten:{
+      provider: () => new HDWalletProvider(process.env.MNEMONIC,process.env.ROPSTEN_NODE),
+      network_id: 3
+    },
     rinkeby:{
       provider: () => new HDWalletProvider(process.env.MNEMONIC,process.env.REMOTE_NODE),
       network_id: 4
-    }  
+    },
+    live:{
+      provider: () => new HDWalletProvider(process.env.MNEMONIC,process.env.LIVE_NODE),
+      network_id: 1,
+      gasLimit: 1000000
+    }
   },
  
   mocha: {
@@ -22,7 +31,7 @@ module.exports = {
     solc: {
       optimizer: {
         enabled: true,
-        runs: 500
+        runs: 1000
       },
       version: '0.7.4'
     }
