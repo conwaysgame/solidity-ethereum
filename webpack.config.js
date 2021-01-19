@@ -9,6 +9,15 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'client/dist')
   },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
+      }
+    ]
+  },
   plugins: [
     new webpack.ProvidePlugin({
       process: 'process/browser',
