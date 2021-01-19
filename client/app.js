@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 import TruffleContract from 'truffle-contract'
-import detectEthereumProvider from '@metamask/detect-provider'
+// import detectEthereumProvider from '@metamask/detect-provider'
 
 class App {
   constructor() {
@@ -8,8 +8,31 @@ class App {
     this.web3 = null
     this.contracts = {}
     this.currentAccount = {}
-    this.networkType = 'rinkeby'
+    this.networkName = 'rinkeby'
     this.hasWallet = typeof window.ethereum !== 'undefined'
+  }
+
+  initLocalProvider() {
+    console.log('Dev mode loading')
+    this.showMessage(
+      `➡ Connecting to the network at ${process.env.LOCAL_NODE}.`
+    )
+    // this.setAddress(process.env.LOCAL_CONTRACT_ADDRESS);
+    this.web3Provider = new Web3.providers.HttpProvider(process.env.LOCAL_NODE)
+  }
+
+  initTestProvider() {
+    console.log('Prod mode loading')
+    this.showMessage(
+      `➡ Connecting to the network at ${process.env.REMOTE_NODE}.`
+    )
+    this.web3Provider = new Web3.providers.HttpProvider(process.env.REMOTE_NODE)
+  }
+
+  initCurrentProvider() {
+    console.log('Using the current provider.')
+    this.showMessage(`➡ Connecting to the network using current provider.`)
+    this.web3Provider = web3.currentProvider
   }
 
   async initWeb3() {
@@ -20,44 +43,45 @@ class App {
     }
 
     if (process.env.MODE == 'development' && !this.hasWallet) {
-      console.log('Dev mode loading')
-      this.showMessage(
-        `➡ Connecting to the network at ${process.env.LOCAL_NODE}.`
-      )
-      // this.showAddress(process.env.LOCAL_CONTRACT_ADDRESS);
-      this.web3Provider = new Web3.providers.HttpProvider(
-        process.env.LOCAL_NODE
-      )
+      this.initLocalProvider()
     } else if (!this.hasWallet) {
-      console.log('Prod mode loading')
-      this.showMessage(
-        `➡ Connecting to the network at ${process.env.REMOTE_NODE}.`
-      )
-      this.web3Provider = new Web3.providers.HttpProvider(
-        process.env.REMOTE_NODE
-      )
+      this.initTestProvider()
     } else {
-      console.log('Using the current provider.')
-      this.showMessage(`➡ Connecting to the network using current provider.`)
-      this.web3Provider = web3.currentProvider
+      this.initCurrentProvider()
     }
 
     this.web3 = new Web3(this.web3Provider)
 
-    console.log(await detectEthereumProvider())
-
     try {
-      this.networkType = await this.web3.eth.net.getNetworkType()
+      let networkType = await this.web3.eth.net.getNetworkType()
 
-      console.log('Network Type is', this.networkType)
+      console.log('Network Type is', networkType)
 
-      if (this.networkType !== 'rinkeby' && this.networkType !== 'private') {
+      if (
+        networkType !== 'rinkeby' &&
+        networkType !== 'private' &&
+        this.hasWallet
+      ) {
+        // They probably have a wallet but are on main/not rinkeby
+        // Try to connect to rinkeby anyway
+        console.log('Trying to force it to connect to Rinkeby...')
+        this.initTestProvider()
+        this.web3 = new Web3(this.web3Provider)
+      }
+
+      networkType = await this.web3.eth.net.getNetworkType()
+
+      this.setNetworkName(networkType)
+
+      if (networkType !== 'rinkeby' && networkType !== 'private') {
+        this.disable()
         this.showMessage(
-          `Please switch your wallet to use the Rinkeby Testnet, you are currently on ${this.networkType}. Then, refresh!`
+          `Please switch your wallet to use the Rinkeby Testnet, you are currently on ${networkType}. Then, refresh!`
         )
         return false
       }
     } catch (e) {
+      this.disable()
       console.error(
         'Failed to detect network type. Probably no metamask installed.'
       )
@@ -95,7 +119,7 @@ class App {
     this.contracts.ConwaysGameOfLife.deployed()
       .then(async (instance) => {
         console.log('Got an instance of the game')
-        this.showAddress(instance.address)
+        this.setAddress(instance.address)
         this.poll = setInterval(async () => {
           const message = await instance.getWorld.call()
           const gameOfLife = message.match(/.{1,5}/g)
@@ -125,11 +149,8 @@ class App {
     )
   }
 
-  showAddress(address) {
-    console.log('Showing address', address)
-    $('.ethAddress').text(address)
-    $('.ethAddress').removeClass('loading')
-    if (typeof window.ethereum !== 'undefined') {
+  bindPaymentLink(address) {
+    if (this.hasWallet) {
       $('.ethAddressLink').attr(
         'title',
         `Click to send 0.0001ETH to ${address}`
@@ -191,6 +212,43 @@ class App {
         )
       })
     }
+  }
+
+  disable() {
+    console.log('Disabling')
+    $('.ethAddress').hide()
+    $('#etherScanLink').text(
+      'The Game of Life is not currently deployed to the selected network.'
+    )
+    $('#etherScanLink').removeClass('loading')
+  }
+
+  setAddress(address) {
+    console.log('Showing address', address)
+    $('.ethAddress').text(address)
+    $('.ethAddress').removeClass('loading')
+    this.bindPaymentLink(address)
+    this.setEtherscanLink(address)
+  }
+
+  setEtherscanLink(address) {
+    const link = `https://${
+      this.networkName + '.'
+    }etherscan.io/address/${address}`
+
+    $('#etherScanLink').attr('href', link)
+    $('#etherScanLink').attr('target', '_blank')
+    $('#etherScanLink').text('Inspect the contract activity on Etherscan')
+    $('#etherScanLink').removeClass('loading')
+  }
+
+  setNetworkName(networkName) {
+    console.log('Setting network name to', networkName)
+    this.networkName = networkName
+
+    $('#networkName').addClass(networkName)
+    $('#networkName').text(networkName)
+    $('#networkName').removeClass('loading')
   }
 
   showMessage(msg) {
