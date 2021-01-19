@@ -1,3 +1,19 @@
+/* ANIMATIONS */
+
+@-webkit-keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* END ANIMATIONS */
+
 * {
   box-sizing: border-box;
 }
@@ -87,4 +103,12 @@ button {
 
 a.ethAddressLink:link, a.ethAddressLink:visited {
   color:navy;
+}
+
+.loading {
+  -webkit-animation: pulse 3s infinite ease-in-out;
+  -o-animation: pulse 3s infinite ease-in-out;
+  -ms-animation: pulse 3s infinite ease-in-out; 
+  -moz-animation: pulse 3s infinite ease-in-out; 
+  animation: pulse 3s infinite ease-in-out;
 }
