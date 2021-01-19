@@ -27,7 +27,7 @@ body {
 
 h1 {
   text-align: center;
-  margin: 0 0 2rem 0;
+  margin: 0;
 }
 
 .container {
@@ -35,6 +35,17 @@ h1 {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+}
+
+.headerLinks {
+  font-size:1rem;
+  text-align: center;
+  margin: 0.5rem 0 2rem 0;
+}
+
+.headerLinks span {
+  display: inline-block;
+  margin: 0 1rem;
 }
 
 label {
@@ -111,4 +122,14 @@ a.ethAddressLink:link, a.ethAddressLink:visited {
   -ms-animation: pulse 3s infinite ease-in-out; 
   -moz-animation: pulse 3s infinite ease-in-out; 
   animation: pulse 3s infinite ease-in-out;
+}
+
+.rinkeby {
+  color: green;
+  font-weight: bold;
+}
+
+.main {
+  color: maroon;
+  font-weight: bold;
 }
