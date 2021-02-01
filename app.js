@@ -140,12 +140,11 @@ class App {
   }
 
   async resolveAccount() {
-    // Should use this.web3 maybe??
     let accounts = await this.web3.eth.getAccounts()
     this.currentAccount = accounts[0]
     this.web3.eth.defaultAccount = accounts[0]
     console.log(
-      `Default account is ${web3.eth.defaultAccount}/${this.currentAccount}`
+      `Default account is ${this.web3.eth.defaultAccount}/${this.currentAccount}`
     )
   }
 
